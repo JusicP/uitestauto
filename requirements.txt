@@ -1,0 +1,7 @@
+pyside6==6.10.2
+pydantic==2.12.5
+jinja2==3.1.6
+git+https://github.com/pywinauto/pywinauto.git@c23e64d5ea2c7d251f263973d320294f2fba5ef0#egg=pywinauto
+pytest==9.0.2
+qt-material-icons==0.5.0
+google-genai==1.68.0

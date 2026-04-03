@@ -1,0 +1,58 @@
+"""
+Auto-generated UI Test via UiTestAuto
+Test Case: {{ case.name }}
+Description: {{ case.description }}
+Backend: pywinauto ({{ backend_variant }})
+"""
+
+import pytest
+import pywinauto
+import time
+from uitestauto.core.healer_engine import robust_execute
+
+_BACKEND = "pywinauto_{{ backend_variant }}"
+
+def test_{{ case.name | lower | replace(' ', '_') | replace('-', '_') }}():
+    desktop = pywinauto.Desktop(backend="{{ backend_variant }}")
+
+    {% for step in case.steps %}
+    # Step {{ step.id }}: {{ step.description or step.action_type.upper() }}
+    {% if step.action_type == 'wait' -%}
+    time.sleep({{ step.value | default(1, true) }})
+
+    {% elif step.action_type == 'start_app' -%}
+    app = pywinauto.Application(backend="{{ backend_variant }}").start(r'''{{ step.value }}''')
+    # wait for app to run
+    time.sleep(2)
+
+    {% elif step.action_type == 'kill_app' -%}
+    import os
+    os.system(f'taskkill /f /im "{{ step.value }}"')
+
+    {% else -%}
+    {# Logic for actions using robust_execute (including 'custom') #}
+    {% if step.custom_code -%}
+    def _post_hook_{{ step.id }}(element):
+        {{ step.custom_code | indent(8) }}
+
+    _hook = _post_hook_{{ step.id }}
+    {% else -%}
+    _hook = None
+    {% endif -%}
+
+    from uitestauto.models.element import UIElementLocator
+
+    robust_execute(
+        step_id={{ step.id }},
+        step_type="{{ 'assert_exists' if step.action_type == 'custom' else step.action_type.value }}",
+        backend_name=_BACKEND,
+        locator_path=[
+            {% for loc in step.locators -%}
+            UIElementLocator(**{{ loc.model_dump(exclude_none=True) }}){{ "," if not loop.last }}
+            {% endfor -%}
+        ],
+        value={% if step.value %}r'''{{ step.value }}'''{% else %}None{% endif %},
+        post_action_func=_hook
+    )
+    {% endif %}
+    {% endfor %}
