@@ -16,6 +16,7 @@ class ScenarioStepType(str, Enum):
     CUSTOM = "custom"
     MOUSE_OVER = "mouse_over"
 
+
 class ClickValue(str, Enum):
     LEFT = "left"
     RIGHT = "right"

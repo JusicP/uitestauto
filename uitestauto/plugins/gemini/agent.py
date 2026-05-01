@@ -5,6 +5,7 @@ from google.genai import types
 from uitestauto.ai.base_agent import AbstractReActAgent, AgentResponse
 from uitestauto.core.settings import SettingsManager
 
+
 class GeminiAIAgent(AbstractReActAgent):
     @classmethod
     def supported_models(cls) -> list[str]:

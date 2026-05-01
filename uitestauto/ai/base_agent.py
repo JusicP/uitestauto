@@ -11,16 +11,19 @@ from uitestauto.ai.prompts import AGENT_SYSTEM_PROMPT_TEMPLATE
 
 logger = logging.getLogger("UiTestAuto")
 
+
 class AgentAction(BaseModel):
     action_type: ScenarioStepType
     element_id: int | None = None
     value: str | None = None
     description: str | None = None
 
+
 class AgentResponse(BaseModel):
     thought: str
     action: AgentAction | None = None
     is_goal_reached: bool = False
+
 
 def get_dynamic_prompt() -> str:
     schema = AgentResponse.model_json_schema()
@@ -32,6 +35,7 @@ def get_dynamic_prompt() -> str:
         
     schema_str = json.dumps(schema, indent=2)
     return AGENT_SYSTEM_PROMPT_TEMPLATE.replace("{schema_json}", schema_str)
+
 
 class AbstractReActAgent(BaseAIAgent):
     def __init__(self):
@@ -159,7 +163,7 @@ class AbstractReActAgent(BaseAIAgent):
                 
                 step_locators: list[UIElementLocator] = []
                 if act.element_id is not None:
-                    eid: int = int(act.element_id)
+                    eid = act.element_id
                     step_locators = element_map.get(eid, [])
                     if not step_locators:
                         msg = f"Hallucinated element_id: {act.element_id}. Must use an ID from the list."
@@ -184,7 +188,8 @@ class AbstractReActAgent(BaseAIAgent):
                         step_type=step.action_type.value,
                         locator_path=locator_path,
                         value=step.value,
-                        step_id=step.id
+                        step_id=step.id,
+                        ambiguity_resolver=None
                     )
                     success_msg = f"Successfully executed: {step.description}"
                     log_callback(f"[Agent] ACT Success: {success_msg}")

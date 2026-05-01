@@ -5,8 +5,6 @@ Kept for backward compatibility. The UI layer (main_window.py / test_engine.py)
 should prefer using the generator obtained from the PluginRegistry directly.
 """
 
-from __future__ import annotations
-
 from uitestauto.plugins.base import BaseGenerator
 from uitestauto.models.project import TestCase
 

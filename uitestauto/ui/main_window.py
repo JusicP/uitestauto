@@ -15,8 +15,8 @@ from uitestauto.ui.panels.ui_browser import UIBrowserPanel
 from uitestauto.ui.panels.test_case_scenario_editor import TestCaseScenarioEditorPanel
 from uitestauto.ui.panels.project_explorer import ProjectExplorerPanel
 from uitestauto.ui.panels.ai_agent_panel import AIAgentPanel
+from uitestauto.ui.test_engine import TestEngine
 from uitestauto.core.project_manager import ProjectManager
-from uitestauto.core.test_engine import TestEngine
 from uitestauto.models.project import TestCase, TestSuite, ProjectConfig
 from uitestauto.plugins.registry import plugin_registry
 from uitestauto.plugins.pywinauto import register_pywinauto_backends
@@ -27,6 +27,7 @@ from collections import Counter
 # bootstrap: register pywinauto backends once at module load
 register_pywinauto_backends(plugin_registry)
 register_gemini_agent(plugin_registry)
+
 
 class SignaledLogHandler(logging.Handler, QObject):
     log_signal = Signal(str)

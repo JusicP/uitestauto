@@ -1,5 +1,5 @@
-from PySide6.QtWidgets import QStyleFactory
 import sys
+from PySide6.QtWidgets import QStyleFactory
 from PySide6.QtWidgets import QApplication
 from uitestauto.ui.main_window import UiTestAutoWindow
 

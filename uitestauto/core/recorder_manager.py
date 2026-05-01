@@ -6,8 +6,6 @@ via the PluginRegistry. The UI layer (main_window.py) is responsible for
 instantiating and driving the RecorderManager.
 """
 
-from __future__ import annotations
-
 import logging
 from uitestauto.plugins.base import BaseRecorder
 from uitestauto.models.element import ScenarioStep

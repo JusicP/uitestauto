@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (QMessageBox, QWidget, QVBoxLayout, QHBoxLayout,
 from PySide6.QtCore import Qt, Signal
 
 from uitestauto.plugins.registry import plugin_registry
-from uitestauto.core.inspector import UIInspector
+from uitestauto.plugins.base import BaseInspector
 from uitestauto.core.project_manager import ProjectManager
 from uitestauto.models.element import UIElementLocator, ScenarioStep, ScenarioStepType
 
@@ -20,7 +20,7 @@ class UIBrowserPanel(QWidget):
 
     def __init__(self):
         super().__init__()
-        self._inspector: UIInspector | None = None
+        self._inspector: BaseInspector | None = None
         self._current_backend_name: str | None = None
         self.setup_ui()
 
@@ -105,8 +105,7 @@ class UIBrowserPanel(QWidget):
             return
         self._current_backend_name = name
         try:
-            backend = plugin_registry.create_inspector(name)
-            self._inspector = UIInspector(backend)
+            self._inspector = plugin_registry.create_inspector(name)
         except KeyError as e:
             QMessageBox.critical(self, "Backend error", str(e))
             self._inspector = None

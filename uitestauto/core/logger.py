@@ -1,5 +1,6 @@
 import logging
 
+
 def _setup_logger():
     logger = logging.getLogger("UiTestAuto")
     logger.setLevel(logging.DEBUG)
