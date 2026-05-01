@@ -8,7 +8,7 @@ Backend: pywinauto ({{ backend_variant }})
 import pytest
 import pywinauto
 import time
-from uitestauto.core.executor_helper import robust_execute
+from uitestauto.core.executor_helper import execute_test_step
 
 _BACKEND = "pywinauto_{{ backend_variant }}"
 
@@ -31,7 +31,7 @@ def test_{{ case.name | lower | replace(' ', '_') | replace('-', '_') }}():
     os.system(f'taskkill /f /im "{{ step.value }}"')
 
     {% else -%}
-    {# Logic for actions using robust_execute (including 'custom') #}
+    {# Logic for actions using execute_test_step (including 'custom') #}
     {% if step.custom_code -%}
     def _post_hook_{{ step.id }}(element):
         {{ step.custom_code | indent(8) }}
@@ -43,7 +43,7 @@ def test_{{ case.name | lower | replace(' ', '_') | replace('-', '_') }}():
 
     from uitestauto.models.element import UIElementLocator
 
-    robust_execute(
+    execute_test_step(
         step_id={{ step.id }},
         step_type="{{ 'assert_exists' if step.action_type == 'custom' else step.action_type.value }}",
         backend_name=_BACKEND,

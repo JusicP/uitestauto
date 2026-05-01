@@ -6,7 +6,7 @@ from uitestauto.models.element import UIElementLocator
 logger = logging.getLogger("UiTestAuto")
 
 
-def robust_execute(
+def execute_test_step(
     step_type: str,
     locator_path: list[UIElementLocator],
     value: str | None,
