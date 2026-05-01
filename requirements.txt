@@ -5,3 +5,4 @@ git+https://github.com/pywinauto/pywinauto.git@c23e64d5ea2c7d251f263973d320294f2
 pytest==9.0.2
 qt-material-icons==0.5.0
 google-genai==1.68.0
+pywinauto_recorder==0.6.8

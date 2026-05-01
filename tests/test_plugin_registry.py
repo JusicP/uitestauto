@@ -1,6 +1,6 @@
 import pytest
 
-from uitestauto.plugins.base import BaseInspector, BaseRecorder, BaseHealer, BaseGenerator
+from uitestauto.plugins.base import BaseInspector, BaseRecorder, BaseExecutor, BaseGenerator
 from uitestauto.plugins.registry import PluginRegistry
 from uitestauto.models.project import TestCase
 
@@ -14,7 +14,7 @@ class MockRecorder(BaseRecorder):
     def stop(self): return []
     def quit(self): pass
 
-class MockHealer(BaseHealer):
+class MockExecutor(BaseExecutor):
     def execute(self, step_type, locator_path, value=None, step_id=None,
                 ambiguity_resolver=None, post_action_func=None):
         pass
@@ -29,7 +29,7 @@ def _make_registry_with_mock() -> PluginRegistry:
         name="mock_backend",
         inspector_factory=MockInspector,
         recorder_factory=MockRecorder,
-        healer_factory=MockHealer,
+        executor_factory=MockExecutor,
         generator_factory=MockGenerator,
     )
     return registry
@@ -38,8 +38,8 @@ def _make_registry_with_mock() -> PluginRegistry:
 def test_register_and_list_backends():
     registry = PluginRegistry()
     assert registry.list_backends() == []
-    registry.register("a", MockInspector, MockRecorder, MockHealer, MockGenerator)
-    registry.register("b", MockInspector, MockRecorder, MockHealer, MockGenerator)
+    registry.register("a", MockInspector, MockRecorder, MockExecutor, MockGenerator)
+    registry.register("b", MockInspector, MockRecorder, MockExecutor, MockGenerator)
     assert registry.list_backends() == ["a", "b"]
 
 
@@ -62,10 +62,10 @@ def test_create_recorder():
     assert isinstance(recorder, BaseRecorder)
 
 
-def test_create_healer():
+def test_create_executor():
     registry = _make_registry_with_mock()
-    healer = registry.create_healer("mock_backend")
-    assert isinstance(healer, BaseHealer)
+    executor = registry.create_executor("mock_backend")
+    assert isinstance(executor, BaseExecutor)
 
 
 def test_create_generator():
@@ -123,8 +123,8 @@ def test_project_manager_get_backend_for_case():
 
     case = TestCase(name="TempCase", backend="pywinauto_uia")
     pm = ProjectManager()
-    insp, rec, heal, gen = pm.get_backend_for_case(case)
+    insp, rec, exec, gen = pm.get_backend_for_case(case)
     assert isinstance(insp, BaseInspector)
     assert isinstance(rec, BaseRecorder)
-    assert isinstance(heal, BaseHealer)
+    assert isinstance(exec, BaseExecutor)
     assert isinstance(gen, BaseGenerator)
