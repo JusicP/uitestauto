@@ -1,7 +1,8 @@
 from typing import Callable, Tuple
 from uitestauto.models.project import ProjectConfig, TestSuite, TestCase
 from uitestauto.plugins.registry import plugin_registry
-from uitestauto.plugins.base import BaseInspector, BaseRecorder, BaseHealer, BaseGenerator
+from uitestauto.plugins.base import BaseInspector, BaseRecorder, BaseExecutor, BaseGenerator
+
 
 class ProjectManager:
     """
@@ -144,7 +145,7 @@ class ProjectManager:
 
     def get_backend_for_case(
         self, case: TestCase
-    ) -> Tuple[BaseInspector, BaseRecorder, BaseHealer, BaseGenerator]:
+    ) -> Tuple[BaseInspector, BaseRecorder, BaseExecutor, BaseGenerator]:
         """
         Resolve and return fresh backend instances for the given TestCase.
         The backend name (e.g. 'pywinauto_uia') is read from case.backend.
@@ -153,6 +154,6 @@ class ProjectManager:
         name = case.backend
         inspector = plugin_registry.create_inspector(name)
         recorder = plugin_registry.create_recorder(name)
-        healer = plugin_registry.create_healer(name)
+        executor = plugin_registry.create_executor(name)
         generator = plugin_registry.create_generator(name)
-        return inspector, recorder, healer, generator
+        return inspector, recorder, executor, generator

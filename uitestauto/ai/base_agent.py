@@ -90,7 +90,7 @@ class AbstractReActAgent(BaseAIAgent):
         self.is_running = True
         
         inspector = plugin_registry.create_inspector(backend_name)
-        healer = plugin_registry.create_healer(backend_name)
+        executor = plugin_registry.create_executor(backend_name)
         history_of_actions: list[Any] = []
         successful_steps: list[ScenarioStep] = []
         
@@ -176,11 +176,11 @@ class AbstractReActAgent(BaseAIAgent):
                     is_ai_suggested=True
                 )
                 
-                # Form locator_path for healer
+                # Form locator_path for executor
                 locator_path = [loc.to_pywinauto_kwargs() for loc in step.locators]
                 
                 try:
-                    healer.execute(
+                    executor.execute(
                         step_type=step.action_type.value,
                         locator_path=locator_path,
                         value=step.value,

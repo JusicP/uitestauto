@@ -1,7 +1,7 @@
 from uitestauto.plugins.base import (
     BaseInspector,
     BaseRecorder,
-    BaseHealer,
+    BaseExecutor,
     BaseGenerator,
 )
 from uitestauto.plugins.registry import PluginRegistry, plugin_registry
@@ -9,7 +9,7 @@ from uitestauto.plugins.registry import PluginRegistry, plugin_registry
 __all__ = [
     "BaseInspector",
     "BaseRecorder",
-    "BaseHealer",
+    "BaseExecutor",
     "BaseGenerator",
     "PluginRegistry",
     "plugin_registry",

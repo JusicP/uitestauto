@@ -8,9 +8,10 @@ Backend: pywinauto ({{ backend_variant }})
 import pytest
 import pywinauto
 import time
-from uitestauto.core.healer_engine import robust_execute
+from uitestauto.core.executor_helper import robust_execute
 
 _BACKEND = "pywinauto_{{ backend_variant }}"
+
 
 def test_{{ case.name | lower | replace(' ', '_') | replace('-', '_') }}():
     desktop = pywinauto.Desktop(backend="{{ backend_variant }}")
@@ -52,7 +53,8 @@ def test_{{ case.name | lower | replace(' ', '_') | replace('-', '_') }}():
             {% endfor -%}
         ],
         value={% if step.value %}r'''{{ step.value }}'''{% else %}None{% endif %},
-        post_action_func=_hook
+        post_action_func=_hook,
+        ambiguity_resolver=None,
     )
     {% endif %}
     {% endfor %}

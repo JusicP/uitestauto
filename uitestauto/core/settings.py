@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 
+
 class SettingsManager:
     _instance = None
     

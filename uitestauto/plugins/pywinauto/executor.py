@@ -13,7 +13,7 @@ from pywinauto.timings import TimeoutError
 from pywinauto.findwindows import ElementAmbiguousError, find_elements
 from pywinauto.controls.uiawrapper import UIAWrapper
 
-from uitestauto.plugins.base import BaseHealer
+from uitestauto.plugins.base import BaseExecutor
 from uitestauto.models.element import ScenarioStepType, UIElementLocator
 
 logger = logging.getLogger("UiTestAuto")
@@ -50,7 +50,7 @@ def _get_all_ambiguous_targets(
     return current_paths
 
 
-class PywinautoHealerBackend(BaseHealer):
+class PywinautoExecutorBackend(BaseExecutor):
     def __init__(self, pywinauto_backend: str = "uia") -> None:
         self._pywinauto_backend = pywinauto_backend
 
@@ -69,7 +69,7 @@ class PywinautoHealerBackend(BaseHealer):
 
         except ElementAmbiguousError:
             logger.warning(
-                f"[Healer/{self._pywinauto_backend}] Ambiguous element. "
+                f"[Executor/{self._pywinauto_backend}] Ambiguous element. "
                 f"Attempting dynamic resolution for step_id={step_id}..."
             )
             self._resolve_ambiguity(
@@ -79,7 +79,7 @@ class PywinautoHealerBackend(BaseHealer):
             return
 
         except Exception:
-            logger.exception(f"[Healer/{self._pywinauto_backend}] locator failed.")
+            logger.exception(f"[Executor/{self._pywinauto_backend}] locator failed.")
 
         raise Exception("Element could not be found.")
 
@@ -119,7 +119,7 @@ class PywinautoHealerBackend(BaseHealer):
 
         self._perform_action(step_type, value, target_element)
 
-        logger.info(f"[Healer/{self._pywinauto_backend}] Executed {step_type} step")
+        logger.info(f"[Executor/{self._pywinauto_backend}] Executed {step_type} step")
 
         if post_action_func:
             post_action_func(target_element)
@@ -178,10 +178,10 @@ class PywinautoHealerBackend(BaseHealer):
         ambiguous_targets = _get_all_ambiguous_targets(locator_path, self._pywinauto_backend)
 
         if not ambiguous_targets:
-            logger.warning(f"[Healer/{self._pywinauto_backend}] Dynamic resolution failed: no ambiguous targets found.")
+            logger.warning(f"[Executor/{self._pywinauto_backend}] Dynamic resolution failed: no ambiguous targets found.")
             raise Exception("Element could not be found.")
 
-        logger.info(f"[Healer/{self._pywinauto_backend}] Found {len(ambiguous_targets)} ambiguous elements.")
+        logger.info(f"[Executor/{self._pywinauto_backend}] Found {len(ambiguous_targets)} ambiguous elements.")
 
         if ambiguity_resolver is not None:
             correct_index = ambiguity_resolver(ambiguous_targets)
@@ -189,12 +189,12 @@ class PywinautoHealerBackend(BaseHealer):
             correct_index = self._qt_resolve(ambiguous_targets)
 
         if correct_index == -1:
-            logger.warning(f"[Healer/{self._pywinauto_backend}] Ambiguity resolution cancelled.")
+            logger.warning(f"[Executor/{self._pywinauto_backend}] Ambiguity resolution cancelled.")
             raise Exception("Ambiguous element resolution cancelled.")
 
         target, indices = ambiguous_targets[correct_index]
         indices_str = ",".join(map(str, indices))
-        logger.info(f"[Healer/{self._pywinauto_backend}] Resolved with indices: {indices_str}")
+        logger.info(f"[Executor/{self._pywinauto_backend}] Resolved with indices: {indices_str}")
 
         if step_id is not None:
             # signal to app to update locator (heal)

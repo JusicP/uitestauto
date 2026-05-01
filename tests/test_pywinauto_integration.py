@@ -4,7 +4,7 @@ import time
 import os
 import sys
 
-from uitestauto.plugins.pywinauto.healer import PywinautoHealerBackend
+from uitestauto.plugins.pywinauto.executor import PywinautoExecutorBackend
 from uitestauto.plugins.pywinauto.inspector import PywinautoInspectorBackend
 from uitestauto.models.element import ScenarioStepType
 
@@ -33,8 +33,8 @@ def test_pywinauto_inspector(running_dummy_app):
     assert tree is not None
     assert "UiTestAuto Dummy App" in tree["display"]
     
-def test_pywinauto_healer(running_dummy_app):
-    healer = PywinautoHealerBackend(pywinauto_backend="uia")
+def test_pywinauto_executor(running_dummy_app):
+    executor = PywinautoExecutorBackend(pywinauto_backend="uia")
     
     # 1. Type text into entry.
     from uitestauto.models.element import UIElementLocator
@@ -43,18 +43,18 @@ def test_pywinauto_healer(running_dummy_app):
         UIElementLocator(control_type="Edit")
     ]
     
-    healer.execute(ScenarioStepType.TYPE_TEXT, entry_loc, value="HelloPytest")
+    executor.execute(ScenarioStepType.TYPE_TEXT, entry_loc, value="HelloPytest")
     
     # 2. Click submit button.
     btn_loc = [
         UIElementLocator(name="UiTestAuto Dummy App", control_type="Window"),
         UIElementLocator(control_type="Button", found_index=1, depth=10)
     ]
-    healer.execute(ScenarioStepType.CLICK, btn_loc, value="left")
+    executor.execute(ScenarioStepType.CLICK, btn_loc, value="left")
     
     # 3. Assert status label updated. Name will be the text itself in UIA
     status_loc = [
         UIElementLocator(name="UiTestAuto Dummy App", control_type="Window"),
         UIElementLocator(control_type="Text", found_index=2, depth=10)
     ]
-    healer.execute(ScenarioStepType.ASSERT_EXISTS, status_loc)
+    executor.execute(ScenarioStepType.ASSERT_EXISTS, status_loc)

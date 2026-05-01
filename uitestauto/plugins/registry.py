@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from uitestauto.plugins.base import (
         BaseInspector,
         BaseRecorder,
-        BaseHealer,
+        BaseExecutor,
         BaseGenerator,
         BaseAIAgent,
     )
@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 class _BackendEntry:
     inspector_factory: Callable[[], "BaseInspector"]
     recorder_factory: Callable[[], "BaseRecorder"]
-    healer_factory: Callable[[], "BaseHealer"]
+    executor_factory: Callable[[], "BaseExecutor"]
     generator_factory: Callable[[], "BaseGenerator"]
 
 
@@ -49,14 +49,14 @@ class PluginRegistry:
         name: str,
         inspector_factory: Callable[[], "BaseInspector"],
         recorder_factory: Callable[[], "BaseRecorder"],
-        healer_factory: Callable[[], "BaseHealer"],
+        executor_factory: Callable[[], "BaseExecutor"],
         generator_factory: Callable[[], "BaseGenerator"],
     ) -> None:
         """Register a full backend under *name*."""
         self._backends[name] = _BackendEntry(
             inspector_factory=inspector_factory,
             recorder_factory=recorder_factory,
-            healer_factory=healer_factory,
+            executor_factory=executor_factory,
             generator_factory=generator_factory,
         )
 
@@ -75,8 +75,8 @@ class PluginRegistry:
     def create_recorder(self, name: str) -> "BaseRecorder":
         return self._get(name).recorder_factory()
 
-    def create_healer(self, name: str) -> "BaseHealer":
-        return self._get(name).healer_factory()
+    def create_executor(self, name: str) -> "BaseExecutor":
+        return self._get(name).executor_factory()
 
     def create_generator(self, name: str) -> "BaseGenerator":
         return self._get(name).generator_factory()

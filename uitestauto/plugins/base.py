@@ -1,7 +1,7 @@
 """
 Abstract Base Classes for UiTestAuto plugin backends.
 
-Each subsystem (Inspector, Recorder, Healer, Generator, ...) is defined here
+Each subsystem (Inspector, Recorder, Executor, Generator, ...) is defined here
 as an abstract base class.
 """
 
@@ -66,11 +66,11 @@ class BaseRecorder(ABC):
         """Release all resources held by the recorder."""
 
 
-class BaseHealer(ABC):
+class BaseExecutor(ABC):
     """
-    Step executor with healing capabilities.
+    Step executor.
     Implementations attempt to locate an element and perform an action,
-    recovering from various bad situations.
+    maybe recovering from bad situations (healing).
     """
 
     @abstractmethod
@@ -78,9 +78,9 @@ class BaseHealer(ABC):
         self,
         step_type: str,
         locator_path: list["UIElementLocator"],
-        value: str | None = None,
-        step_id: int | None = None,
-        ambiguity_resolver: Callable[[list], int] | None = None,
+        value: str | None,
+        step_id: int | None,
+        ambiguity_resolver: Callable[[list], int] | None,
         post_action_func: Callable | None = None,
     ) -> None:
         """
@@ -100,6 +100,7 @@ class BaseGenerator(ABC):
         Render test_case into a test script at output_path.
         Returns True on success, False on failure.
         """
+
 
 class BaseAIAgent(ABC):
     """
@@ -130,4 +131,3 @@ class BaseAIAgent(ABC):
         """
         Stop loop.
         """
-

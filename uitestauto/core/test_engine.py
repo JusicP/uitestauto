@@ -13,13 +13,13 @@ from uitestauto.core.logger import logger
 
 class TestEngine(QObject):
     """
-    Executes a stored TestCase, TestSuite, or ProjectConfig by generating a
-    pytest script via the PluginRegistry's generator backend and running it
-    via subprocess, piping output to the given logger callback.
+    Executes a stored TestCase, TestSuite, or ProjectConfig (contains TestSuite)
+    by generating a python test script (currently we are limited to pytest) via the PluginRegistry's
+    Generator backend and running it via subprocess, piping output to the given logger callback.
 
     The *ambiguity_resolver* callable is forwarded into the generated script's
     environment via stdout protocol (UITESTAUTO_HEALED_STEP_INDEX).
-    In a subprocess context, ambiguity resolution relies on the user responding
+    By default, in a subprocess context, ambiguity resolution relies on the user responding
     through a dialog shown by the subprocess (not available here without
     embedded Qt), so the healed index is communicated back via stdout parsing.
     """
