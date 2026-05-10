@@ -43,6 +43,13 @@ class BaseInspector(ABC):
         """
         Highlight an element.
         """
+    
+    @abstractmethod
+    def dump_tree(self, window_name: str):
+        """
+        Dump the UI tree somewhere.
+        # TODO: pass filename
+        """
 
 
 class BaseRecorder(ABC):

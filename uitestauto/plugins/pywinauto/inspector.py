@@ -128,3 +128,9 @@ class PywinautoInspectorBackend(BaseInspector):
 
     def highlight_element(self, element):
         element.draw_outline(colour='green', thickness=2)
+    
+    def dump_tree(self, window_name: str):
+        desktop = Desktop(backend=self._variant)
+        window = desktop.window(title=window_name)
+        window.dump_tree(max_width=None, depth=None)
+        

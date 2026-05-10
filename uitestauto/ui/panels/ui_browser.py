@@ -56,6 +56,10 @@ class UIBrowserPanel(QWidget):
         self.btn_inspect.clicked.connect(self.inspect_selected_window)
         control_layout.addWidget(self.btn_inspect)
 
+        self.btn_dump_tree = QPushButton("Dump tree")
+        self.btn_dump_tree.clicked.connect(self.dump_tree)
+        control_layout.addWidget(self.btn_dump_tree)
+
         layout.addLayout(control_layout)
 
         self.splitter = QSplitter(Qt.Orientation.Horizontal)
@@ -183,6 +187,12 @@ class UIBrowserPanel(QWidget):
                 parent_item.addChildren(children_items)
 
         self.tree.expandToDepth(1)
+
+    def dump_tree(self):
+        if not self._inspector:
+            return
+
+        self._inspector.dump_tree(self.window_combo.currentData()["name"])
 
     def on_item_clicked(self, item: QTreeWidgetItem, column: int):
         locators: list[UIElementLocator] = item.data(0, Qt.ItemDataRole.UserRole)
