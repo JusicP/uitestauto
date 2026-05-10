@@ -180,13 +180,10 @@ class AbstractReActAgent(BaseAIAgent):
                     is_ai_suggested=True
                 )
                 
-                # Form locator_path for executor
-                locator_path = [loc.to_pywinauto_kwargs() for loc in step.locators]
-                
                 try:
                     executor.execute(
                         step_type=step.action_type.value,
-                        locator_path=locator_path,
+                        locator_path=step.locators,
                         value=step.value,
                         step_id=step.id,
                         ambiguity_resolver=None
