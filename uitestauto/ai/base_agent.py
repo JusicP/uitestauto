@@ -1,7 +1,9 @@
 import json
 import logging
+import time
 from abc import abstractmethod
 from typing import Callable, Any
+
 from pydantic import BaseModel
 
 from uitestauto.models.element import ScenarioStepType, UIElementLocator, ScenarioStep
@@ -113,12 +115,22 @@ class AbstractReActAgent(BaseAIAgent):
         iteration = 0
         max_iterations = 10
         
+        total_observe_time = 0.0
+        total_think_time = 0.0
+        total_execute_time = 0.0
+        total_loop_time = 0.0
+
         while self.is_running and iteration < max_iterations:
+            loop_start_time = time.perf_counter()
+
             iteration += 1
             log_callback(f"\n[Agent] Iteration {iteration}/{max_iterations}")
             
             # OBSERVE
+            observe_start_time = time.perf_counter()
+
             log_callback("[Agent] OBSERVE: Fetching UI Elements...")
+
             if target_handle:
                 ui_tree = inspector.get_window_tree(handle=target_handle)
             else:
@@ -135,7 +147,13 @@ class AbstractReActAgent(BaseAIAgent):
                 flat_elements, _ = self._flatten_ui_tree_with_map(ui_tree, 1, element_map)
                 current_ui_json = json.dumps(flat_elements, indent=2)
                 log_callback(f"[Agent] OBSERVE: Found {len(flat_elements)} UI elements.")
-                
+            
+            observe_end_time = time.perf_counter()
+            observe_execution_time = (
+                observe_end_time - observe_start_time
+            )
+            total_observe_time += observe_execution_time
+
             # REASON
             prompt = (
                 f"{get_dynamic_prompt()}\n\n"
@@ -146,16 +164,27 @@ class AbstractReActAgent(BaseAIAgent):
             )
             
             log_callback("[Agent] REASON: Asking Agent for next action...")
+
+            think_start_time = time.perf_counter()
+
             try:
                 agent_res = self._ask_llm(prompt)
             except Exception as e:
                 log_callback(f"[Agent] Error querying or parsing LLM response: {e}")
                 history_of_actions.append(f"System error: {e}")
                 break
-                
+
+            think_end_time = time.perf_counter()
+            think_execution_time = (
+                think_end_time - think_start_time
+            )
+            total_think_time += think_execution_time
+
             log_callback(f"[Agent] THOUGHT: {agent_res.thought}")
             
             # ACT
+            execute_start_time = time.perf_counter()
+
             act = agent_res.action
             if act:
                 assert act is not None
@@ -197,6 +226,14 @@ class AbstractReActAgent(BaseAIAgent):
                     log_callback(f"[Agent] ACT Failed: {error_msg}")
                     history_of_actions.append({"status": "FAILED", "action": step.model_dump(), "error": str(e)})
 
+            execute_end_time = time.perf_counter()
+            execute_execution_time = execute_end_time - execute_start_time
+            total_execute_time += execute_execution_time
+
+            loop_end_time = time.perf_counter()
+            total_loop_execution_time = loop_end_time - loop_start_time
+            total_loop_time += total_loop_execution_time
+
             if agent_res.is_goal_reached:
                 log_callback("[Agent] goal reached")
                 break
@@ -206,6 +243,22 @@ class AbstractReActAgent(BaseAIAgent):
                 log_callback(f"[Agent] WARNING: {msg}")
                 history_of_actions.append(msg)
                 continue
+
+        if iteration > 0:
+            avg_observe_time = total_observe_time / iteration
+            avg_think_time = total_think_time / iteration
+            avg_execute_time = total_execute_time / iteration
+            avg_loop_time = total_loop_time / iteration
+
+            log_callback("\n[Agent] ===== Stats =====")
+            log_callback(f"[Agent] Total OBSERVE time: {total_observe_time:.3f}s")
+            log_callback(f"[Agent] Total THINK time: {total_think_time:.3f}s")
+            log_callback(f"[Agent] Total EXECUTE time: {total_execute_time:.3f}s")
+            log_callback(f"[Agent] Total LOOP pass time: {total_loop_time:.3f}s")
+            log_callback(f"[Agent] Average OBSERVE time: {avg_observe_time:.3f}s")
+            log_callback(f"[Agent] Average THINK time: {avg_think_time:.3f}s")
+            log_callback(f"[Agent] Average EXECUTE time: {avg_execute_time:.3f}s")
+            log_callback(f"[Agent] Average LOOP pass time: {avg_loop_time:.3f}s")
 
         self.is_running = False
         log_callback("[Agent] Finished running.")
