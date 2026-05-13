@@ -135,8 +135,13 @@ class TestCaseScenarioEditorPanel(QWidget):
         if len(target_str) > 80:
             target_str = target_str[:77] + "..."
 
+        if step.is_ai_suggested:
+            step_idx_str = f"{step.id} [AI]"
+        else:
+            step_idx_str = str(step.id)
+
         # Create Tree Item
-        item = QTreeWidgetItem(self.tree, [str(step.id), action_str, target_str, "", ""])
+        item = QTreeWidgetItem(self.tree, [step_idx_str, action_str, target_str, "", ""])
         item.setData(0, Qt.ItemDataRole.UserRole, step)
         
         # Column 3: Data Input (QLineEdit)
