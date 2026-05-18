@@ -320,6 +320,11 @@ class UiTestAutoWindow(QMainWindow):
         self.btn_run_test.triggered.connect(self.run_test_action)
         toolbar.addAction(self.btn_run_test)
 
+        self.btn_run_test_cyclic = QAction("Run test cyclic", self)
+        self.btn_run_test_cyclic.setToolTip("Run test cyclic")
+        self.btn_run_test_cyclic.triggered.connect(self.run_cyclic_test)
+        toolbar.addAction(self.btn_run_test_cyclic)
+
         self.btn_generate = QAction("Generate code", self)
         self.btn_generate.setToolTip("Generate code")
         self.btn_generate.triggered.connect(self.trigger_code_generation)
@@ -385,6 +390,9 @@ class UiTestAutoWindow(QMainWindow):
 
     def run_test_action(self):
         self.run_item()
+
+    def run_cyclic_test(self):
+        raise NotImplementedError
 
     def get_selected_node(self):
         items = self.project_panel.tree.selectedItems()
