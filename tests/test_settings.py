@@ -1,7 +1,4 @@
 import pytest
-import shutil
-import json
-from pathlib import Path
 from unittest.mock import patch
 from uitestauto.core.settings import SettingsManager
 
