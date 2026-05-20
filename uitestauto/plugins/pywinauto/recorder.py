@@ -159,7 +159,7 @@ class _RecorderNoCode(Recorder):
                         id=len(steps) + 1,
                         action_type=ScenarioStepType.TYPE_TEXT,
                         locators=[],
-                        value=keys,
+                        value=eval(keys),  # event.line is python code... 
                         description=f"Type '{keys}'",
                     )
                 )
