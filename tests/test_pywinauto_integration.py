@@ -10,7 +10,7 @@ from uitestauto.models.element import ScenarioStepType
 
 def find_app_path():
     base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    return os.path.join(base, "test_apps", "dummy_app.py")
+    return os.path.join(base, "test_apps", "dummy_app_qt.py")
 
 @pytest.fixture(scope="module")
 def running_dummy_app():

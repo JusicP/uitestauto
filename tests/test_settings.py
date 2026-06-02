@@ -20,6 +20,7 @@ def test_settings_manager_save_load(tmp_settings_dir):
     sm = SettingsManager()
     sm.set_api_key("12345")
     sm.set_ai_model("gemini-3-pro")
+    sm.save()
     
     # recreate singleton to test file loading
     SettingsManager._instance = None

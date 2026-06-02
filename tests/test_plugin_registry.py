@@ -8,6 +8,8 @@ from uitestauto.models.project import TestCase
 class MockInspector(BaseInspector):
     def get_top_level_windows(self): return []
     def get_window_tree(self, window_name=None, handle=None): return None
+    def dump_tree(self, window_name: str): pass
+    def highlight_element(self, element): pass
 
 class MockRecorder(BaseRecorder):
     def start(self): pass
