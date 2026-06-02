@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
     QDialog, QFormLayout, QLineEdit, QComboBox, 
-    QDialogButtonBox, QVBoxLayout
+    QDialogButtonBox, QSpinBox, QVBoxLayout
 )
 from uitestauto.core.settings import SettingsManager
 from uitestauto.plugins.registry import plugin_registry
@@ -31,6 +31,11 @@ class SettingsDialog(QDialog):
         self._on_plugin_changed(self.ai_plugin_input.currentText())
         form_layout.addRow("AI Model:", self.ai_model_input)
         
+        self.ai_max_iterations_num = QSpinBox(value=self.settings.get_ai_max_iterations_num())
+        self.ai_max_iterations_num.setRange(1, 100)
+        self.ai_max_iterations_num.setSingleStep(1)
+        form_layout.addRow("AI Max iterations number:", self.ai_max_iterations_num)
+
         layout.addLayout(form_layout)
         
         buttons = QDialogButtonBox(
@@ -42,10 +47,11 @@ class SettingsDialog(QDialog):
         
     def _on_plugin_changed(self, plugin_name: str):
         self.ai_model_input.clear()
-        agent_cls = plugin_registry._ai_agents.get(plugin_name)
-        
-        if agent_cls and hasattr(agent_cls, "supported_models"):
-            models = agent_cls.supported_models()
+        agent_factory = plugin_registry._ai_agents.get(plugin_name)
+
+        if agent_factory:
+            agent = agent_factory()
+            models = agent.supported_models()
             if models:
                 self.ai_model_input.addItems(models)
                 
@@ -62,4 +68,7 @@ class SettingsDialog(QDialog):
         self.settings.set_api_key(self.api_key_input.text().strip())
         self.settings.set_ai_model(self.ai_model_input.currentText().strip())
         self.settings.set_ai_agent_plugin(self.ai_plugin_input.currentText().strip())
+        self.settings.set_ai_max_iterations_num(self.ai_max_iterations_num.value())
+        self.settings.save()
+
         super().accept()

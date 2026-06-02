@@ -30,30 +30,30 @@ class SettingsManager:
             except Exception:
                 pass
                 
-    def _save(self):
-        try:
-            with open(self._settings_file, "w", encoding="utf-8") as f:
-                json.dump(self._data, f, indent=4)
-        except Exception:
-            pass
+    def save(self):
+        with open(self._settings_file, "w", encoding="utf-8") as f:
+            json.dump(self._data, f, indent=4)
 
     def get_api_key(self) -> str:
         return self._data.get("api_key", "")
         
     def set_api_key(self, api_key: str):
         self._data["api_key"] = api_key
-        self._save()
 
     def get_ai_model(self) -> str:
         return self._data.get("ai_model", "gemini-2.5-flash")
         
     def set_ai_model(self, model: str):
         self._data["ai_model"] = model
-        self._save()
 
     def get_ai_agent_plugin(self) -> str:
         return self._data.get("ai_agent_plugin", "gemini_agent")
         
     def set_ai_agent_plugin(self, agent_plugin_name: str):
         self._data["ai_agent_plugin"] = agent_plugin_name
-        self._save()
+
+    def get_ai_max_iterations_num(self) -> int:
+        return self._data.get("ai_max_iterations_num", 10)
+
+    def set_ai_max_iterations_num(self, max_iterations_num: int):
+        self._data["max_iterations_num"] = max_iterations_num

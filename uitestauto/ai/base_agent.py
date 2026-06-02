@@ -6,6 +6,7 @@ from typing import Callable, Any
 
 from pydantic import BaseModel
 
+from uitestauto.core.settings import SettingsManager
 from uitestauto.models.element import ScenarioStepType, UIElementLocator, ScenarioStep
 from uitestauto.plugins.registry import plugin_registry
 from uitestauto.plugins.base import BaseAIAgent
@@ -113,7 +114,8 @@ class AbstractReActAgent(BaseAIAgent):
             log_callback(f"[Agent] WARNING: Could not resolve handle for '{target_window_title}'. Using name fallback.")
         
         iteration = 0
-        max_iterations = 10
+        settings = SettingsManager()
+        max_iterations = settings.get_ai_max_iterations_num()
         
         total_observe_time = 0.0
         total_think_time = 0.0
